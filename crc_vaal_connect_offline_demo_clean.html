@@ -1,0 +1,229 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>CRC Vaal Connect - Offline Demo</title>
+<style>
+:root {
+  --bg:#070707; --panel:#111111; --panel-soft:#171717; --line:rgba(255,255,255,.12);
+  --text:#f5f5f5; --muted:#c7c7c7; --accent:#d6b36a; --success-bg:rgba(84,180,117,.10);
+  --success-line:rgba(84,180,117,.35); --success-text:#69cf87;
+}
+* { box-sizing:border-box; }
+body { margin:0; font-family:Arial,Helvetica,sans-serif; background:linear-gradient(180deg,var(--bg) 0%,#0d0d0d 58%,#131313 100%); color:var(--text); }
+.wrap { width:min(1180px, calc(100% - 32px)); margin:0 auto; }
+header { border-bottom:1px solid var(--line); background:rgba(7,7,7,.95); position:sticky; top:0; z-index:20; }
+.top { display:flex; justify-content:space-between; align-items:center; gap:18px; flex-wrap:wrap; padding:18px 0; }
+.brand { display:flex; align-items:center; gap:14px; }
+.brand-mark { width:56px; height:56px; border-radius:999px; border:2px solid rgba(255,255,255,.75); display:grid; place-items:center; font-weight:bold; }
+.brand-copy .name { font-size:30px; letter-spacing:.18em; font-weight:700; }
+.brand-copy .sub { font-size:11px; letter-spacing:.35em; text-transform:uppercase; color:var(--muted); }
+nav { display:flex; gap:10px; flex-wrap:wrap; }
+nav span { border:1px solid var(--line); border-radius:999px; padding:10px 14px; font-size:13px; color:var(--muted); }
+nav span.gold { color:var(--accent); }
+main { padding:34px 0 56px; }
+.hero { display:grid; grid-template-columns:1fr; gap:24px; margin-bottom:28px; }
+.panel { border:1px solid var(--line); border-radius:32px; background:var(--panel); box-shadow:0 20px 50px rgba(0,0,0,.28); }
+.hero-main { padding:40px; background:linear-gradient(135deg, rgba(255,255,255,.03), rgba(214,179,106,.08)); }
+.hero-side { padding:26px; }
+.pill { display:inline-flex; gap:8px; align-items:center; border:1px solid var(--line); border-radius:999px; padding:10px 14px; color:var(--muted); font-size:13px; }
+.dot { width:10px; height:10px; border-radius:999px; background:var(--accent); display:inline-block; }
+h1 { font-size:clamp(36px, 6vw, 62px); line-height:1.05; margin:18px 0 0; }
+.lead { max-width:760px; margin-top:18px; line-height:1.8; color:var(--muted); font-size:18px; }
+.actions,.form-actions { display:flex; gap:12px; flex-wrap:wrap; margin-top:24px; }
+button,.btn { border-radius:18px; padding:14px 20px; font-size:15px; font-weight:700; border:1px solid transparent; cursor:pointer; text-decoration:none; }
+.btn-primary { background:var(--accent); color:#111; }
+.btn-secondary { background:transparent; color:var(--text); border-color:var(--line); }
+.label { font-size:12px; color:var(--accent); letter-spacing:.3em; text-transform:uppercase; margin-bottom:14px; }
+.mini { border:1px solid var(--line); border-radius:22px; padding:16px 18px; margin-bottom:12px; color:var(--muted); line-height:1.65; font-size:14px; }
+.mini strong { display:block; color:var(--text); margin-bottom:4px; }
+.cards { display:grid; grid-template-columns:repeat(3,1fr); gap:22px; }
+.card { border:1px solid var(--line); border-radius:28px; background:var(--panel); padding:28px; box-shadow:0 20px 50px rgba(0,0,0,.28); }
+.icon { width:58px; height:58px; border-radius:20px; background:rgba(214,179,106,.14); display:grid; place-items:center; font-size:26px; margin-bottom:18px; }
+.card h3 { margin:0 0 10px; font-size:30px; }
+.card p { color:var(--muted); line-height:1.8; min-height:110px; }
+.qr-box { margin-top:28px; max-width:440px; background:var(--panel); border:1px solid var(--line); border-radius:28px; padding:24px; text-align:center; }
+.qr-box img { background:#fff; padding:12px; border-radius:16px; width:260px; height:260px; }
+.form-panel { display:none; border:1px solid var(--line); border-radius:32px; background:var(--panel); padding:28px; box-shadow:0 20px 50px rgba(0,0,0,.28); max-width:980px; margin:0 auto; }
+.form-panel.active { display:block; }
+.section-title { display:flex; align-items:center; gap:12px; margin-bottom:18px; }
+.section-title h2 { margin:0; font-size:30px; }
+.success { display:none; gap:12px; border-radius:18px; padding:14px 16px; margin-bottom:16px; background:var(--success-bg); border:1px solid var(--success-line); }
+.success.active { display:flex; }
+.check { width:28px; height:28px; border-radius:999px; display:grid; place-items:center; background:rgba(105,207,135,.18); color:var(--success-text); font-weight:700; flex:0 0 28px; }
+.form-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:18px; }
+label span { display:block; margin-bottom:8px; font-size:14px; font-weight:700; }
+input,select,textarea { width:100%; background:var(--panel-soft); color:var(--text); border:1px solid var(--line); border-radius:18px; padding:14px 15px; font-size:15px; font-family:inherit; }
+textarea { min-height:130px; resize:vertical; }
+.full { grid-column:1 / -1; }
+.help-choices { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-bottom:22px; }
+.choice { border:1px solid var(--line); border-radius:26px; padding:20px; background:var(--panel-soft); cursor:pointer; text-align:left; }
+.choice.active { border-color:var(--accent); background:rgba(214,179,106,.08); }
+.choice h3 { margin:0 0 8px; font-size:22px; }
+.choice p,.hint { margin:0; color:var(--muted); line-height:1.6; font-size:14px; }
+.selected-need { margin-bottom:20px; border:1px solid var(--line); border-radius:26px; padding:20px; background:var(--panel-soft); }
+.selected-need .small { color:var(--accent); text-transform:uppercase; letter-spacing:.24em; font-size:12px; margin-bottom:10px; }
+@media (max-width:960px) { .hero,.cards,.help-choices,.form-grid { grid-template-columns:1fr; } .card p { min-height:auto; } }
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap top">
+    <div class="brand">
+      <div class="brand-mark">CRC</div>
+      <div class="brand-copy">
+        <div class="name">VAAL</div>
+        <div class="sub">Connect Experience</div>
+      </div>
+    </div>
+    <nav>
+      <span>Home</span><span>About Us</span><span>Homecell</span><span class="gold">Giving</span><span>Connect</span><span>I Need Help</span><span>Get Involved</span><span>Contact Us</span>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="hero">
+    <div class="panel hero-main">
+      <div class="pill"><span class="dot"></span> Morning Service 08:30 · Evening Service 18:00</div>
+      <h1 id="pageTitle">CRC Vaal Connect</h1>
+      <div class="lead">This is a fully self-contained offline demo of the CRC Vaal Connect concept. It works without internet for presentation purposes, including the menu, form flow, and visible QR code.</div>
+      <div class="actions">
+        <button class="btn-primary" onclick="showPanel('home')">Main Connect Page</button>
+        <button class="btn-secondary" onclick="showPanel('visitor')">Visitor Form</button>
+        <button class="btn-secondary" onclick="showPanel('help')">I Need Help</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="homePanel">
+    <div class="cards">
+      <div class="card">
+        <div class="icon">💳</div>
+        <h3>Tithing &amp; Offering</h3>
+        <p>For the offline demo, this shows the giving journey as a church action item. On the live site it links to the existing CRC Vaal payments page.</p>
+        <div class="actions"><button class="btn-primary" onclick="alert('Offline demo: on the live website this will open the CRC Vaal payments page.')">Preview Giving Action</button></div>
+      </div>
+      <div class="card">
+        <div class="icon">👋</div>
+        <h3>Visitor Connect</h3>
+        <p>Capture first-time or returning visitor details for follow-up calls, welcome messages and optional prayer support after the service.</p>
+        <div class="actions"><button class="btn-primary" onclick="showPanel('visitor')">Open Visitor Form</button></div>
+      </div>
+      <div class="card">
+        <div class="icon">🤝</div>
+        <h3>I Need Help</h3>
+        <p>Use one church care journey where a person selects Food Parcel / Clothing, Prayer Request, or Counseling, then completes the matching form.</p>
+        <div class="actions"><button class="btn-primary" onclick="showPanel('help')">Open I Need Help</button></div>
+      </div>
+    </div>
+
+    <div class="qr-box">
+      <h3>Church QR Code</h3>
+      <p class="hint">Visitors can scan this QR code to open the CRC Vaal Connect page once it is published live.</p>
+      <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAXIAAAFyAQAAAADAX2ykAAACiklEQVR4nO2bQW7bMBBF/68EeEkBPoCPQt0gR/KZcgPxKD5AAXEpgMLvgqRsJ2iRoAobFcOFbElv8YHBcDifFIXPjPDjUzhgvPHGG2+88cb/jmcZPYBY/iM83XJsqMf4nXkvSZoB8iLBK+XnHNFJkvTMf7Ue43fi+/IbB8C/AkDskxDPotdKAACBLjXSY/y+fP/+0UoBKxWGn+31GP+1vCZ0IgcAiD00/WM9xu/DOynH0mthDvLoJI4ApFqOv69+4//IB5LkAHCMJ/E6A/C3HgDWspxuqsf4nfhcfx9NSpegcEkQkKDnd99Pv/Ef4TkCAGKfL7zeSIQByE1wsPw9Kl/yN7BLCC8LkdfPsUtAJOS1En4eWukxfl8e2bwohkYnoBoamly93Mf03fQb/3HeK0GTW5hdyeuNOZ1Lu9Rcj/F/z6PkJTpJc5dNynKbPcvqT3rL3wPzbiF5WXjvenPPNGLNl8Z6jN+HL/UXToKfUSdpAMXzcOkxnS1/D8Zv/vPaK1xSr7rISvSvhBBPop/PoJ9a6DF+X37L3+pAeiWUIuzSU3W2/D0gX/ujGTm08HUtBT8jR7q+tfgejy/zcxi6RMSziDhUu+OSesClXuEisI0e4/flN3+jrKXga5P0Jp1tfj4k/zg/5+Hq/PxQk2fY/HxMHnoeJaq5Xeq2SFv+Hpq/n58srW8kEYaV9z2lpnqM35nPFXYGgHjaEjYhp7PXYv7Vsfm4nXB2CzVlVxJl6zcMnZ2P/Y94jqgBzXZltP39g/Lvzsf620kIL0B2KgNRW98meoz/Gt5JdVdhIa/ztrSq+wscm+oxfh+++s95dKUryuuruewEF8/D+qMD8rTvu4033njjjTe+Of8LeeXGcUFkc0YAAAAASUVORK5CYII=" alt="CRC Vaal Connect QR Code" />
+      <p class="hint" style="margin-top:12px;">Target URL: https://crcvaal.co.za/connect</p>
+    </div>
+  </section>
+
+  <section id="visitorPanel" class="form-panel">
+    <div class="section-title"><div class="icon" style="margin:0;">👋</div><h2>Visitor Information Form</h2></div>
+    <div id="visitorSuccess" class="success"><div class="check">✓</div><div><strong>Visitor form submitted</strong><span>This offline demo simulates a successful submission for presentation purposes.</span></div></div>
+    <div class="form-grid">
+      <label><span>First name</span><input id="vFirstName"></label>
+      <label><span>Surname</span><input id="vSurname"></label>
+      <label><span>Mobile number</span><input id="vMobile"></label>
+      <label><span>Email address</span><input id="vEmail" type="email"></label>
+      <label><span>Is this your first visit?</span><select id="vVisit"><option>Yes</option><option>No</option></select></label>
+      <label><span>Would you like a follow-up call?</span><select id="vCall"><option>Yes</option><option>No</option></select></label>
+      <label class="full"><span>Prayer request or note</span><textarea id="vPrayer"></textarea></label>
+    </div>
+    <div class="form-actions">
+      <button class="btn-primary" onclick="submitVisitor()">Submit Visitor Form</button>
+      <button class="btn-secondary" onclick="resetVisitor()">Reset</button>
+      <button class="btn-secondary" onclick="showPanel('home')">Back to Main Page</button>
+    </div>
+  </section>
+
+  <section id="helpPanel" class="form-panel">
+    <div class="section-title"><div class="icon" style="margin:0;">🤝</div><h2>I Need Help</h2></div>
+    <div id="helpSuccess" class="success"><div class="check">✓</div><div><strong>Help request submitted</strong><span>This offline demo simulates routing the request to the correct ministry or pastoral team.</span></div></div>
+
+    <div class="help-choices">
+      <button id="choiceFood" class="choice" onclick="setHelpCategory('Food Parcel / Clothing')"><div class="icon" style="width:48px;height:48px;margin-bottom:12px;">👕</div><h3>Food Parcel / Clothing</h3><p>A practical assistance request that can be routed to the care team.</p></button>
+      <button id="choicePrayer" class="choice" onclick="setHelpCategory('Prayer')"><div class="icon" style="width:48px;height:48px;margin-bottom:12px;">✨</div><h3>Prayer Request</h3><p>A prayer-focused form for members or visitors who need spiritual support.</p></button>
+      <button id="choiceCounseling" class="choice" onclick="setHelpCategory('Counseling')"><div class="icon" style="width:48px;height:48px;margin-bottom:12px;">📞</div><h3>Counseling</h3><p>A more private support request that can be escalated to the pastoral care team.</p></button>
+    </div>
+
+    <div class="selected-need">
+      <div class="small">Selected Need</div>
+      <div id="selectedNeedTitle" style="font-size:28px;font-weight:700;">Counseling</div>
+      <div class="hint" style="margin-top:8px;">This prototype starts with shared contact details and then changes the final capture fields depending on the selected need.</div>
+    </div>
+
+    <div class="form-grid">
+      <label><span>Full name</span><input id="hName"></label>
+      <label><span>Email address</span><input id="hEmail" type="email"></label>
+      <label><span>Mobile number</span><input id="hMobile"></label>
+      <label><span>Homecell leader name</span><input id="hLeader"></label>
+
+      <div id="foodFields" class="full" style="display:none;"><label><span>Please describe the assistance needed</span><textarea id="hFood"></textarea></label></div>
+      <div id="prayerFields" class="full" style="display:none;"><label><span>Prayer request</span><textarea id="hPrayer"></textarea></label></div>
+      <div id="counselingFields" class="full">
+        <div class="form-grid">
+          <label><span>Preferred contact method</span><select id="hMethod"><option>Phone call</option><option>WhatsApp</option><option>Email</option></select></label>
+          <label><span>Urgency</span><select id="hUrgency"><option>Standard</option><option>Urgent</option><option>Very urgent</option></select></label>
+          <label class="full"><span>Reason for counseling</span><textarea id="hReason"></textarea></label>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button class="btn-primary" onclick="submitHelp()">Submit Help Request</button>
+      <button class="btn-secondary" onclick="resetHelp()">Reset</button>
+      <button class="btn-secondary" onclick="showPanel('home')">Back to Main Page</button>
+    </div>
+  </section>
+</main>
+
+<script>
+function showPanel(which) {
+  document.getElementById('homePanel').style.display = which === 'home' ? 'block' : 'none';
+  document.getElementById('visitorPanel').classList.toggle('active', which === 'visitor');
+  document.getElementById('helpPanel').classList.toggle('active', which === 'help');
+  const titleMap = { home:'CRC Vaal Connect', visitor:'Visitor Connect', help:'I Need Help' };
+  document.getElementById('pageTitle').textContent = titleMap[which] || 'CRC Vaal Connect';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+function submitVisitor() { document.getElementById('visitorSuccess').classList.add('active'); }
+function resetVisitor() {
+  ['vFirstName','vSurname','vMobile','vEmail','vPrayer'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('vVisit').selectedIndex = 0;
+  document.getElementById('vCall').selectedIndex = 0;
+  document.getElementById('visitorSuccess').classList.remove('active');
+}
+function setHelpCategory(category) {
+  document.getElementById('selectedNeedTitle').textContent = category;
+  document.getElementById('choiceFood').classList.toggle('active', category === 'Food Parcel / Clothing');
+  document.getElementById('choicePrayer').classList.toggle('active', category === 'Prayer');
+  document.getElementById('choiceCounseling').classList.toggle('active', category === 'Counseling');
+  document.getElementById('foodFields').style.display = category === 'Food Parcel / Clothing' ? 'block' : 'none';
+  document.getElementById('prayerFields').style.display = category === 'Prayer' ? 'block' : 'none';
+  document.getElementById('counselingFields').style.display = category === 'Counseling' ? 'block' : 'none';
+}
+function submitHelp() { document.getElementById('helpSuccess').classList.add('active'); }
+function resetHelp() {
+  ['hName','hEmail','hMobile','hLeader','hFood','hPrayer','hReason'].forEach(id => {
+    const el = document.getElementById(id); if (el) el.value = '';
+  });
+  document.getElementById('hMethod').selectedIndex = 0;
+  document.getElementById('hUrgency').selectedIndex = 0;
+  document.getElementById('helpSuccess').classList.remove('active');
+  setHelpCategory('Counseling');
+}
+setHelpCategory('Counseling');
+</script>
+</body>
+</html>
